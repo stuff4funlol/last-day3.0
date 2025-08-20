@@ -24,7 +24,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    z-index: 2000; /* ensure above everything */
+    z-index: 2000;
   }
   button.info-btn {
     background: #444;
@@ -171,12 +171,18 @@
   </div>
 </div>
 
-<!-- Help modal trigger -->
-<button class="help-btn" id="helpBtn">Help</button>
+<!-- Help modal trigger (now inline, no JS needed) -->
+<button class="help-btn" id="helpBtn"
+        onclick="document.getElementById('helpModal').style.display='block'">
+  Help
+</button>
 <div class="modal" id="helpModal">
   <h2>Help</h2>
-  <p style="white-space:pre-wrap">If there is an issue please just be patient. I'll probably find it soon and get it fixed I apologize in advance. But if something isn't accurate please tell the person you got the website from and eventually it'll get back to me to fix. I'm 1 person not multiple. This website was built with the help from ChatGPT but the idea was entirely human. Thank you-MVM</p>
-  <button id="helpClose">Close</button>
+  <p style="white-space:pre-wrap">If there is an issue please just be patient. I'll probably find it soon and get it fixed I apologize in advance. But if something isn't accurate please tell the person you got the website from and eventually it'll get back to me to fix. I'm 1 person not multiple. This website was built with the help from ChatGPT but the idea was entirely human. Thank you-MVM (a freshman)</p>
+  <button id="helpClose"
+          onclick="document.getElementById('helpModal').style.display='none'">
+    Close
+  </button>
 </div>
 
 <script>
@@ -235,7 +241,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById("countdown").textContent = formatTime(secondsLeft);
   }
 
-  // Expose for inline buttons
+  // Expose for the top-right info modal
   window.openInfo  = () => { document.getElementById("infoModal").style.display = "block"; };
   window.closeInfo = () => { document.getElementById("infoModal").style.display = "none"; };
 
