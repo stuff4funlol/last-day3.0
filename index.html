@@ -43,14 +43,24 @@
     margin-bottom: 10px;
     text-align: center;
   }
+  #daysRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   #daysRemaining {
     font-size: 10vw;
     font-weight: bold;
     display: inline-block;
     vertical-align: middle;
+    line-height: 1;
+  }
+  #daysUnit {
+    font-size: 3.2vw;
+    opacity: .9;
   }
   #countdown {
-    font-size: 3vw;
+    font-size: 2.6vw;
     margin-top: 20px;
     font-family: monospace;
   }
@@ -83,7 +93,7 @@
   }
   .modal button:hover { background: #777; }
 
-  /* Add-on styles */
+  /* Add-ons */
   .inline-info-btn{
     margin-left:10px;background:#444;color:#fff;border:none;
     width:28px;height:28px;border-radius:50%;cursor:pointer
@@ -122,11 +132,12 @@
 </div>
 
 <div id="eventName">Last Day of School</div>
-<div>
+<div id="daysRow">
   <span id="daysRemaining">Loading...</span>
+  <span id="daysUnit">days</span>
   <button id="inlineInfo" class="inline-info-btn" title="Active countdown info">i</button>
 </div>
-<div id="countdown">--:--:--</div>
+<div id="countdown">-- hours -- minutes -- seconds</div>
 
 <!-- Info modal -->
 <div class="modal" id="infoModal">
@@ -152,9 +163,7 @@
 
 <!-- More Countdowns menu -->
 <div class="more-menu" id="moreMenu">
-  <!-- FIRST item is the quick-return -->
   <div class="item" data-key="lastDay">Last Day of School</div>
-
   <div class="item" data-key="winterBreak">Winter Break</div>
   <div class="item" data-key="springBreak">Spring Break</div>
   <div class="item" data-key="thanksgivingBreak">Thanksgiving Break</div>
@@ -171,14 +180,14 @@
   </div>
 </div>
 
-<!-- Help modal trigger (now inline, no JS needed) -->
+<!-- Help modal trigger (inline open/close so it always works) -->
 <button class="help-btn" id="helpBtn"
         onclick="document.getElementById('helpModal').style.display='block'">
   Help
 </button>
 <div class="modal" id="helpModal">
   <h2>Help</h2>
-  <p style="white-space:pre-wrap">If there is an issue please just be patient. I'll probably find it soon and get it fixed I apologize in advance. But if something isn't accurate please tell the person you got the website from and eventually it'll get back to me to fix. I'm 1 person not multiple. This website was built with the help from ChatGPT but the idea was entirely human. Thank you-MVM (a freshman)</p>
+  <p style="white-space:pre-wrap">If there is an issue please just be patient. I'll probably find it soon and get it fixed I apologize in advance. But if something isn't accurate please tell the person you got the website from and eventually it'll get back to me to fix. I'm 1 person not multiple. This website was built with the help from ChatGPT but the idea was entirely human. Thank you-MVM</p>
   <button id="helpClose"
           onclick="document.getElementById('helpModal').style.display='none'">
     Close
@@ -205,6 +214,7 @@ window.addEventListener('DOMContentLoaded', () => {
   /* Utils */
   const atMidnight = (d) => { const x = new Date(d); x.setHours(0,0,0,0); return x; };
   const pad = (n) => String(n).padStart(2,'0');
+  const unit = (n, one, many) => (n === 1 ? one : many);
 
   // Exclusive count (reduced by 1 day)
   function calculateRemainingDaysExclusive(today, finalDay) {
@@ -215,11 +225,13 @@ window.addEventListener('DOMContentLoaded', () => {
     return Math.max(0, diff);
   }
 
-  function formatTime(seconds) {
-    const h = pad(Math.floor(seconds / 3600));
-    const m = pad(Math.floor((seconds % 3600) / 60));
-    const s = pad(seconds % 60);
-    return `${h}:${m}:${s}`;
+  function formatLabeledTime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${pad(h)} ${unit(h, "hour", "hours")} ` +
+           `${pad(m)} ${unit(m, "minute", "minutes")} ` +
+           `${pad(s)} ${unit(s, "second", "seconds")}`;
   }
 
   function update() {
@@ -229,7 +241,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const remainingDays = calculateRemainingDaysExclusive(todayMidnight, finalDay);
 
-    // seconds until next midnight, show 24:00:00 exactly at midnight
+    // seconds until next midnight, show 24 hours 00 minutes 00 seconds at midnight
     const nextMidnight = new Date(todayMidnight);
     nextMidnight.setDate(nextMidnight.getDate() + 1);
     let secondsLeft = Math.floor((nextMidnight - now) / 1000);
@@ -238,10 +250,11 @@ window.addEventListener('DOMContentLoaded', () => {
     // display
     document.getElementById("eventName").textContent = events[selectedEvent].name;
     document.getElementById("daysRemaining").textContent = remainingDays;
-    document.getElementById("countdown").textContent = formatTime(secondsLeft);
+    document.getElementById("daysUnit").textContent = unit(remainingDays, "day", "days");
+    document.getElementById("countdown").textContent = formatLabeledTime(secondsLeft);
   }
 
-  // Expose for the top-right info modal
+  // Info modal
   window.openInfo  = () => { document.getElementById("infoModal").style.display = "block"; };
   window.closeInfo = () => { document.getElementById("infoModal").style.display = "none"; };
 
@@ -313,3 +326,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
