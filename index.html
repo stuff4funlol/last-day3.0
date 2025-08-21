@@ -1,168 +1,212 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GCHS countdowns</title>
+<title>GCHS Countdowns</title>
+
+<!-- Embedded favicon (no extra file needed) -->
+<link rel="icon" type="image/png" sizes="32x32"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAUCAYAAADskT9PAAAHMUlEQVR4nJ2We1BU9xXHv/fB3RfLa0GBZQGXhV2ewm6IPBaUVwNRxDYlRmsbTaZajGA6E+10mN41c6qE5JzGMj0QkY3Z5M6h0v1sS2+zZ4M5e8fF6y6b+2c1J8f5+f96sXw8bqfBz4fQ4w1p+5oQ2r8w0R3mK1eMcq2mV5m4bWn5zN3fJqQyX1qjyz8r2mJvYwB9bVxXwqk6l7e4uJHuzmQ7c1t9iZLx9fZ9Vvu4n2QZPdb7j7p6hF7mMg5qkJQO9e+7n7g7iUvyh5Jx6T8o3vIZl2qXQx7q0iXb8mivQ7t9y0gE3i0dG0rQvKQWj2E3mHk1Jw2SRq3g1i6Qy0xw7p9BzH5oUQ7VLGcEwVnQ9Ww3o0+K6c7t7YpCk6mH3Qq0J+ta9d3r0g8c4m8oQX3s3j3dWcB7JrGgq4J5aYyqk8m0jN5q0wqkQHcQ0bFj5U1XwQJf8qkB7lD4f1Lx1yJp8cC5n4wHkP4lN5yJkB1vJX5z9D6kQ+oW0a2j6bQpF9a7w3aYfYVfB6eG5H6k0bOeV9o3dQk2yHjJxF6c1k3V9lZ6gH9a7nGQ3B7fLQ8r1l1nS3m0r8oP5e7j4Cw9G6m8m0hN+gq0m7bQnJ5Yf0vKf4IY9r+e7dJ6yHnJm5q5m3o4Y5pLwHhPp0r7v3m9q3ynm0c2kE0u9m3r7mY5m0r2m6iJ0d0QvYvE+oYwDjGmZ8f1xgR3m0Ggqgkqk9FQWbZ0mT0oQW2m0d2k6kQK7QXwV8r9JzZ1F3q1D8VwYj1qZs9L1qf7M36aSdwc6aPp8C1s3vX8q6JbJkqgqgqgkYQm2V6TqOa3+o6pQO5OZqkT0b2Gm3lqv6m7n2gUqkQKkQKkQKkQKkQKkQKkQKl8z4YcC9M1nN5vX7v0b9v0w7M3g1k5eXl5fX3x+u7s7Ozu7WvVw0Gg3m82m82m81m81m8M3G7q9RqNRoNBoP1fKZrMZrMZfK5XC5XKpUKhUKhQLudwOBwOBycnJ4uLi0PRaDQajcZisVgslgslpOTk5WVlWQyGQ2m41qtRqFQmEwmOzs7Dw8PNBqNfL4fDw8OysrKQyWQh1gsFh8fH0+tVqtZrVaYTCYlJSU7Ozs0Go2SkpJwOBzY2dmBQRBqa2u5ubm4XC4CAwMZGRk4HA5oa2vB4XCQy+WSk5NDr9eLjo6ONBrN9PR0vLy8cDgc9Ho9PT09mUwmpqamhoaGkEql0Ol0Ojo6gkqlgqKiIhAIBJfLQ6/Xw8/PB4XB4eHicnJwKBAEYjUa7u7tUKhWZmZl4PB54PB5fX19iYmLw+HwqFQrW1tZgMBi8Xh87OztcXFzY2NhgMpnAycmJw+HAgAEDg8H4+Hh0dHRdnZ2XC4X/f39dHR0nE4nKysrCwsL2Wy2UqlU7Ozs4uLiHB0d7e3tq6urUqlUjkajXK5HEAR8fHx0dHSEw2G83m8zMzNiYmKampqQSCQ2Ww2QqEQq9Xi6OjI9fX1dXV1TCaTg4ODR0dHMBiMRCIRp9MZV8Q3wqY0gAAAABJRU5ErkJggg==" />
+
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #222;
-    color: #eee;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+  :root{
+    --grant-red:#C8102E;
+    --grant-red-dark:#A50E24;
+    --page:#f3f4f7;
+    --text:#1b1d21;
+    --muted:#6b7280;
+    --card:#ffffff;
+    --shadow:0 14px 30px rgba(0,0,0,.14);
+    --border:#e6e8ef;
+    --track:#e5e7eb;
+    --track-on-red:rgba(255,255,255,.35);
+    --bar-on-red:#fff;
   }
-  /* Top bar */
-  .topbar {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 2000;
-  }
-  button.info-btn {
-    background: #444;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-  button.info-btn:hover { background: #666; }
-
-  /* Main countdown */
-  #eventName {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  #daysRow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  #daysRemaining {
-    font-size: 10vw;
-    font-weight: bold;
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 1;
-  }
-  #daysUnit {
-    font-size: 3.2vw;
-    opacity: .9;
-  }
-  #countdown {
-    font-size: 2.6vw;
-    margin-top: 20px;
-    font-family: monospace;
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  /* 3-row layout: header, content, footer */
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:var(--page); color:var(--text);
+    display:grid; grid-template-rows:auto 1fr auto;
+    min-height:100vh;
   }
 
-  /* Modal */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #333;
-    color: #eee;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 420px;
-    text-align: left;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    z-index: 3000;
+  /* Header (with Sem1 progress in red) */
+  header{
+    background:var(--grant-red); color:#fff;
+    display:flex; flex-direction:column; gap:8px;
+    padding:8px 16px 12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.18);
+    position:sticky; top:0; z-index:2000;
   }
-  .modal h2 { margin-top: 0; }
-  .modal button {
-    margin-top: 15px;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    background: #555;
-    color: #fff;
-    cursor: pointer;
-  }
-  .modal button:hover { background: #777; }
+  .headrow{ display:flex; align-items:center; justify-content:space-between; min-height:40px; }
+  .brand{ font-weight:800; letter-spacing:.4px; white-space:nowrap; text-shadow:0 1px 0 rgba(0,0,0,.25); }
+  .actions{ display:flex; gap:10px; align-items:center; }
+  .btn{ appearance:none; border:0; border-radius:10px; cursor:pointer; padding:8px 12px; font-weight:700; }
+  .btn-ghost{ background:transparent; color:#fff; border-radius:8px; }
+  .btn-ghost:hover{ background:rgba(255,255,255,.12); }
+  .btn-outline{ background:#fff; color:#000; }
+  .btn-outline:hover{ background:#f2f2f2; }
+  .btn-red{ background:var(--grant-red); color:#fff; border-radius:999px; }
+  .btn-red:hover{ background:var(--grant-red-dark); }
 
-  /* Add-ons */
-  .inline-info-btn{
-    margin-left:10px;background:#444;color:#fff;border:none;
-    width:28px;height:28px;border-radius:50%;cursor:pointer
+  /* Semester 1 progress (on header) */
+  .sem1{ display:flex; flex-direction:column; gap:6px; }
+  .sem1-header{ display:flex; align-items:center; justify-content:space-between; font-size:.95rem; }
+  .sem1-title{ font-weight:800; letter-spacing:.04em; }
+  .sem1-percent{ font-weight:800; }
+  .sem1-track{ position:relative; height:8px; width:100%; background:var(--track-on-red); border-radius:999px; overflow:hidden; }
+  .sem1-track .bar{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--bar-on-red); }
+
+  /* Main card */
+  .wrap{ display:flex; align-items:center; justify-content:center; padding:36px 16px 24px; }
+  .card{
+    width:min(900px, 92vw);
+    background:var(--card); color:var(--text);
+    border-radius:14px; box-shadow:var(--shadow);
+    border:1px solid var(--border);
+    text-align:center; padding:24px 28px 24px;
   }
-  .inline-info-btn:hover{background:#666}
-  .more-btn{
-    background:#444;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer
+  .section-title{
+    color:var(--grant-red); text-transform:uppercase;
+    letter-spacing:.14em; font-weight:800; margin:6px 0 6px;
   }
-  .more-btn:hover{background:#666}
+  .welcome{ margin:0 0 10px; color:var(--muted); font-weight:600; }
+  #eventName{ font-size:1.4rem; font-weight:800; margin:0 0 10px; }
+  #daysRow{ display:flex; align-items:baseline; justify-content:center; gap:12px; }
+  #daysRemaining{ color:var(--grant-red); font-size:clamp(72px, 10vw, 160px); font-weight:900; line-height:1; }
+  #daysUnit{ font-size:clamp(22px, 3.2vw, 36px); color:#374151; font-weight:700; }
+  #countdown{
+    margin-top:10px; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size:clamp(16px, 2.2vw, 18px); color:#1f2937; letter-spacing:.06em;
+  }
+
+  /* Footer: Semester 2 progress ALL the way at the bottom */
+  footer.sem2-footer{
+    display:flex; align-items:flex-end; justify-content:center;
+    padding:0 16px 16px;
+  }
+  .sem2-container{
+    width:min(900px, 92vw);
+    position:relative;
+    color:var(--text);
+  }
+  .sem2-block{
+    text-align:left; position:relative; padding-top:28px;  /* space for the pill */
+  }
+  .sem-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .sem-title{ font-weight:800; letter-spacing:.06em; color:#374151; }
+  .sem-percent{ font-weight:800; color:var(--grant-red); }
+
+  .progress{ position:relative; height:10px; width:100%; background:var(--track); border-radius:999px; overflow:hidden; }
+  .progress .bar{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--grant-red); transition:width .4s ease; }
+
+  /* Rounded "LOCKED" pill above the bar (not overlapping it) */
+  .lock-pill{
+    position:absolute; left:50%; top:0; transform:translate(-50%,-40%);
+    background:rgba(107,114,128,.92); color:#fff;
+    padding:6px 12px; border-radius:999px; font-weight:800; font-size:.8rem; letter-spacing:.03em;
+    white-space:nowrap; pointer-events:none;
+  }
+  .sem-sub{ margin-top:6px; font-size:.9rem; color:#6b7280; }
+
+  /* Dropdown */
   .more-menu{
-    position:absolute;top:50px;right:10px;background:#333;color:#eee;border-radius:12px;
-    box-shadow:0 12px 30px rgba(0,0,0,.4);display:none;min-width:280px;z-index:2500
+    position:fixed; right:12px;
+    background:#fff; color:var(--text);
+    border-radius:12px; box-shadow:0 16px 36px rgba(0,0,0,.18);
+    display:none; min-width:320px; z-index:2500; overflow:hidden;
+    border:1px solid var(--border);
   }
-  .more-menu .item{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.08)}
-  .more-menu .item:hover{background:#3a3a3a}
-  .more-menu .section{padding:10px 14px}
-  .more-menu .section h4{margin:0 0 6px 0;font-size:.95rem;color:#ccc}
+  .more-menu .item{ padding:12px 14px; cursor:pointer; border-bottom:1px solid var(--border); }
+  .more-menu .item:hover{ background:#f7f7fb }
+  .more-menu .section{ padding:12px 14px; }
+  .more-menu .section h4{ margin:0 0 8px 0; font-size:.95rem; color:#374151; }
   .more-menu .section input{
-    width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:#222;color:#eee
+    width:100%; padding:10px; border-radius:10px; border:1px solid #d4d7e2; background:#fff; color:#111;
   }
-  .more-menu .section button{
-    margin-top:8px;padding:6px 10px;border:none;border-radius:8px;background:#555;color:#fff;cursor:pointer
+
+  /* Modals */
+  .modal{ display:none; position:fixed; inset:0; z-index:3000; align-items:center; justify-content:center; background:rgba(0,0,0,.35); padding:16px; }
+  .panel{
+    background:#fff; color:var(--text); border-radius:12px; box-shadow:0 24px 48px rgba(0,0,0,.2);
+    padding:20px; width:min(92vw, 560px); border:1px solid var(--border);
   }
-  .more-menu .section button:hover{background:#777}
-  .help-btn{
-    position:fixed;left:10px;bottom:10px;background:#444;color:#fff;border:none;padding:8px 12px;border-radius:10px;cursor:pointer;z-index:2600
+  .panel h2{ margin:0 0 10px 0; }
+  .panel section{ margin:10px 0 2px; }
+  .panel h3{ margin:.4rem 0; font-size:1rem; color:#374151; }
+  .panel p{ margin:.25rem 0 .75rem; color:#1f2937; }
+
+  /* Help & Disclaimer (fixed) */
+  .help-btn{ position:fixed; left:10px; bottom:10px; z-index:2600; }
+  .disclaimer{
+    position:fixed; left:10px; bottom:54px; z-index:2550;
+    color:#4b5563; font-size:.78rem; max-width:460px; text-transform:uppercase; letter-spacing:.03em;
   }
-  .help-btn:hover{background:#666}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <button class="info-btn" onclick="openInfo()">i</button>
-  <button id="moreBtn" class="more-btn">More Countdowns</button>
-</div>
+<header id="siteHeader">
+  <div class="headrow">
+    <div class="brand">Grant Community High School</div>
+    <div class="actions">
+      <button id="howBtn" class="btn btn-outline">How to use</button>
+      <button id="moreBtn" class="btn btn-ghost">More Countdowns ▾</button>
+    </div>
+  </div>
 
-<div id="eventName">Last Day of School</div>
-<div id="daysRow">
-  <span id="daysRemaining">Loading...</span>
-  <span id="daysUnit">days</span>
-  <button id="inlineInfo" class="inline-info-btn" title="Active countdown info">i</button>
-</div>
-<div id="countdown">-- hours -- minutes -- seconds</div>
+  <!-- Semester 1 progress on the red header -->
+  <div class="sem1" aria-label="Semester 1 progress">
+    <div class="sem1-header">
+      <span class="sem1-title">Semester 1 Progress</span>
+      <span id="sem1Percent" class="sem1-percent">0%</span>
+    </div>
+    <div class="sem1-track" aria-hidden="true"><div id="sem1Bar" class="bar"></div></div>
+  </div>
+</header>
 
-<!-- Info modal -->
-<div class="modal" id="infoModal">
-  <h2>Countdown Info</h2>
-  <p><b>Last Day of School:</b> Countdown until the final school day.</p>
-  <p><b>Winter Break:</b> Countdown until the first day of winter break.</p>
-  <p><b>Spring Break:</b> Countdown until the first day of spring break.</p>
-  <p><b>Thanksgiving Break:</b> Countdown until the first day of Thanksgiving break.</p>
-  <p><b>Graduation:</b> Countdown until graduation day.</p>
-  <p><b>Homecoming:</b> Countdown until Homecoming day.</p>
-  <p><b>Prom:</b> Countdown until Prom.</p>
-  <p><b>Senior Finals:</b> Countdown to the first day of senior final exams.</p>
-  <p><b>Underclass Finals:</b> Countdown to the first day of freshmen sophomore junior final exams.</p>
-  <button onclick="closeInfo()">Close</button>
-</div>
+<main class="wrap">
+  <section class="card" aria-label="Countdown">
+    <div class="section-title">GCHS COUNTDOWN</div>
+    <div class="welcome">Welcome Bulldogs!</div>
 
-<!-- Active countdown info modal -->
-<div class="modal" id="activeInfoModal">
-  <h2>Active Countdown</h2>
-  <p id="activeInfoText"></p>
-  <button id="activeInfoClose">Close</button>
-</div>
+    <div id="eventName">Last Day of School</div>
 
-<!-- More Countdowns menu -->
-<div class="more-menu" id="moreMenu">
+    <div id="daysRow">
+      <span id="daysRemaining">Loading...</span>
+      <span id="daysUnit">days</span>
+    </div>
+
+    <div id="countdown">-- hours -- minutes -- seconds</div>
+
+    <div style="margin-top:14px">
+      <button id="moreInfoBtn" class="btn btn-red">More Info</button>
+    </div>
+  </section>
+</main>
+
+<!-- Footer: Semester 2 progress ALL the way at the bottom -->
+<footer class="sem2-footer" aria-label="Semester 2 section">
+  <div class="sem2-container">
+    <div class="sem2-block">
+      <div class="sem-header">
+        <span class="sem-title">Semester 2 Progress</span>
+        <span id="sem2Percent" class="sem-percent">0%</span>
+      </div>
+      <div class="progress" id="sem2Track">
+        <div id="sem2Bar" class="bar"></div>
+      </div>
+      <div id="sem2Lock" class="lock-pill">LOCKED: Semester 2 has not begun yet.</div>
+      <div id="sem2Sub" class="sem-sub">Jan 5, 2026 – May 22, 2026</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Dropdown -->
+<div class="more-menu" id="moreMenu" role="menu" aria-label="More countdowns">
   <div class="item" data-key="lastDay">Last Day of School</div>
   <div class="item" data-key="winterBreak">Winter Break</div>
   <div class="item" data-key="springBreak">Spring Break</div>
@@ -175,156 +219,213 @@
   <div class="section">
     <h4>How long until day is over</h4>
     <input id="dayOverTime" type="time" />
-    <button id="dayOverGo">Confirm</button>
+    <button id="dayOverGo" class="btn btn-outline">Confirm</button>
     <div id="dayOverResult" style="margin-top:6px;"></div>
   </div>
 </div>
 
-<!-- Help modal trigger (inline open/close so it always works) -->
-<button class="help-btn" id="helpBtn"
-        onclick="document.getElementById('helpModal').style.display='block'">
-  Help
-</button>
-<div class="modal" id="helpModal">
-  <h2>Help</h2>
-  <p style="white-space:pre-wrap">If there is an issue please just be patient. I'll probably find it soon and get it fixed I apologize in advance. But if something isn't accurate please tell the person you got the website from and eventually it'll get back to me to fix. I'm 1 person not multiple. This website was built with the help from ChatGPT but the idea was entirely human. Thank you-MVM (a freshman)</p>
-  <button id="helpClose"
-          onclick="document.getElementById('helpModal').style.display='none'">
-    Close
-  </button>
+<!-- Info modal -->
+<div class="modal" id="infoModal" role="dialog" aria-hidden="true">
+  <div class="panel">
+    <h2>Countdown Info</h2>
+    <p><b>Last Day of School:</b> Countdown until the final school day.</p>
+    <p><b>Winter Break:</b> Countdown until the first day of winter break.</p>
+    <p><b>Spring Break:</b> Countdown until the first day of spring break.</p>
+    <p><b>Thanksgiving Break:</b> Countdown until the first day of Thanksgiving break.</p>
+    <p><b>Graduation:</b> Countdown until graduation day.</p>
+    <p><b>Homecoming:</b> Countdown until Homecoming day.</p>
+    <p><b>Prom:</b> Countdown until Prom.</p>
+    <p><b>Senior Finals:</b> Countdown to the first day of senior final exams.</p>
+    <p><b>Underclass Finals:</b> Countdown to the first day of freshmen sophomore junior final exams.</p>
+    <button class="btn btn-outline" id="infoClose">Close</button>
+  </div>
+</div>
+
+<!-- Active countdown info modal -->
+<div class="modal" id="activeInfoModal" role="dialog" aria-hidden="true">
+  <div class="panel">
+    <h2>Active Countdown</h2>
+    <p id="activeInfoText"></p>
+    <button class="btn btn-outline" id="activeInfoClose">Close</button>
+  </div>
+</div>
+
+<!-- How to use modal -->
+<div class="modal" id="howModal" role="dialog" aria-hidden="true">
+  <div class="panel">
+    <h2>How to use</h2>
+
+    <section>
+      <h3>Welcome</h3>
+      <p>Hello GCHS bulldog! This is an unofficial Grant Community High School website.</p>
+    </section>
+
+    <section>
+      <h3>Viewing other countdowns</h3>
+      <p>Click the <b>“More Countdowns”</b> button on the top right and choose an event from the list.</p>
+    </section>
+
+    <section>
+      <h3>School-day calculator</h3>
+      <p>In the same menu, enter the <b>current time</b> and click <b>Confirm</b>. The result will appear right below it.</p>
+    </section>
+
+    <section>
+      <h3>Thanks!</h3>
+      <p>Thank you for using my custom made website!</p>
+    </section>
+
+    <button class="btn btn-outline" id="howClose">Close</button>
+  </div>
+</div>
+
+<!-- Help -->
+<button class="btn btn-outline help-btn" id="helpBtn">Help</button>
+<div class="modal" id="helpModal" role="dialog" aria-hidden="true">
+  <div class="panel">
+    <h2>Help</h2>
+    <p style="white-space:pre-wrap">
+If there is an issue please just be patient. I'll probably find it soon and get it fixed I apologize in advance.
+But if something isn't accurate please tell the person you got the website from and eventually it'll get back to me to fix.
+I'm 1 person not multiple. This website was built with the help from ChatGPT but the idea was entirely human. Thank you-MVM (a freshman)
+    </p>
+    <button class="btn btn-outline" id="helpClose">Close</button>
+  </div>
+</div>
+
+<!-- Disclaimer -->
+<div class="disclaimer">
+  THIS IS NOT AN OFFICIAL GRANT COMMUNITY HIGH SCHOOL WEBSITE. TO FIND THE OFFICIAL SCHOOL AFFILIATED WEBSITE GO TO GRANTBULLDOGS.ORG
 </div>
 
 <script>
-window.addEventListener('DOMContentLoaded', () => {
-  /* Event dates */
-  const events = {
-    lastDay:           { name: "Last Day of School",  date: "2026-05-22T00:00:00" },
-    winterBreak:       { name: "Winter Break",        date: "2025-12-22T00:00:00" },
-    springBreak:       { name: "Spring Break",        date: "2026-03-23T00:00:00" },
-    thanksgivingBreak: { name: "Thanksgiving Break",  date: "2025-11-26T00:00:00" },
-    graduation:        { name: "Graduation",          date: "2026-05-17T00:00:00" },
-    homecoming:        { name: "Homecoming",          date: "2025-09-19T00:00:00" },
-    prom:              { name: "Prom",                date: "2026-05-01T00:00:00" },
-    seniorFinals:      { name: "Senior Finals",       date: "2026-05-12T00:00:00" },
-    underclassFinals:  { name: "Underclass Finals",   date: "2026-05-20T00:00:00" }
-  };
+/* Utilities */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const pad=(n)=>String(n).padStart(2,'0');
+const unit=(n,one,many)=>n===1?one:many;
+const atMidnight=(d)=>{const x=new Date(d); x.setHours(0,0,0,0); return x;};
 
-  let selectedEvent = "lastDay";
+/* Dates (GCHS set) */
+const events={
+  lastDay:{name:"Last Day of School",date:"2026-05-22T00:00:00"},
+  winterBreak:{name:"Winter Break",date:"2025-12-22T00:00:00"},
+  springBreak:{name:"Spring Break",date:"2026-03-23T00:00:00"},
+  thanksgivingBreak:{name:"Thanksgiving Break",date:"2025-11-26T00:00:00"},
+  graduation:{name:"Graduation",date:"2026-05-17T00:00:00"},
+  homecoming:{name:"Homecoming",date:"2025-09-19T00:00:00"},
+  prom:{name:"Prom",date:"2026-05-01T00:00:00"},
+  seniorFinals:{name:"Senior Finals",date:"2026-05-12T00:00:00"},
+  underclassFinals:{name:"Underclass Finals",date:"2026-05-20T00:00:00"}
+};
+let selectedEvent="lastDay";
 
-  /* Utils */
-  const atMidnight = (d) => { const x = new Date(d); x.setHours(0,0,0,0); return x; };
-  const pad = (n) => String(n).padStart(2,'0');
-  const unit = (n, one, many) => (n === 1 ? one : many);
+/* Semesters */
+const SEM1_START = new Date("2025-08-13T00:00:00");
+const SEM1_END   = new Date("2025-12-19T23:59:59.999");
+const SEM2_START = new Date("2026-01-05T00:00:00");
+function getSem2End(){
+  const d = new Date(events.lastDay.date);
+  d.setHours(23,59,59,999); // through the last day
+  return d;
+}
 
-  // Exclusive count (reduced by 1 day)
-  function calculateRemainingDaysExclusive(today, finalDay) {
-    const start = atMidnight(today);
-    const end   = atMidnight(finalDay);
-    const msPerDay = 24 * 60 * 60 * 1000;
-    const diff = Math.floor((end - start) / msPerDay);
-    return Math.max(0, diff);
-  }
+/* Countdown logic */
+function daysUntilExclusive(today, finalDay){
+  const start=atMidnight(today), end=atMidnight(finalDay);
+  const diff=Math.floor((end-start)/(24*60*60*1000));
+  return Math.max(0,diff);
+}
+function formatLabeledTime(seconds){
+  const h=Math.floor(seconds/3600), m=Math.floor((seconds%3600)/60), s=seconds%60;
+  return `${pad(h)} ${unit(h,"hour","hours")} ${pad(m)} ${unit(m,"minute","minutes")} ${pad(s)} ${unit(s,"second","seconds")}`;
+}
+function update(){
+  const now=new Date();
+  const todayMidnight=atMidnight(now);
+  const finalDay=new Date(events[selectedEvent].date);
 
-  function formatLabeledTime(seconds) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return `${pad(h)} ${unit(h, "hour", "hours")} ` +
-           `${pad(m)} ${unit(m, "minute", "minutes")} ` +
-           `${pad(s)} ${unit(s, "second", "seconds")}`;
-  }
+  const remainingDays=daysUntilExclusive(todayMidnight, finalDay);
 
-  function update() {
-    const now = new Date();
-    const todayMidnight = atMidnight(now);
-    const finalDay = new Date(events[selectedEvent].date);
+  const nextMidnight=new Date(todayMidnight); nextMidnight.setDate(nextMidnight.getDate()+1);
+  let secondsLeft=Math.floor((nextMidnight-now)/1000); if(secondsLeft<=0) secondsLeft=24*3600;
 
-    const remainingDays = calculateRemainingDaysExclusive(todayMidnight, finalDay);
+  $("#eventName").textContent=events[selectedEvent].name;
+  $("#daysRemaining").textContent=remainingDays;
+  $("#daysUnit").textContent=unit(remainingDays,"day","days");
+  $("#countdown").textContent=formatLabeledTime(secondsLeft);
 
-    // seconds until next midnight, show 24 hours 00 minutes 00 seconds at midnight
-    const nextMidnight = new Date(todayMidnight);
-    nextMidnight.setDate(nextMidnight.getDate() + 1);
-    let secondsLeft = Math.floor((nextMidnight - now) / 1000);
-    if (secondsLeft <= 0) secondsLeft = 24 * 3600;
+  updateSemester1Progress(now);
+  updateSemester2Progress(now);
+}
 
-    // display
-    document.getElementById("eventName").textContent = events[selectedEvent].name;
-    document.getElementById("daysRemaining").textContent = remainingDays;
-    document.getElementById("daysUnit").textContent = unit(remainingDays, "day", "days");
-    document.getElementById("countdown").textContent = formatLabeledTime(secondsLeft);
-  }
+/* Semester progress helpers */
+function boundedPercent(now, start, end){
+  if (now <= start) return 0;
+  if (now >= end) return 100;
+  return ((now - start) / (end - start)) * 100;
+}
+function updateSemester1Progress(now=new Date()){
+  const pct = Math.max(0, Math.min(100, boundedPercent(now, SEM1_START, SEM1_END)));
+  $("#sem1Bar").style.width = pct.toFixed(2) + "%";
+  $("#sem1Percent").textContent = Math.floor(pct) + "%";
+}
+function updateSemester2Progress(now=new Date()){
+  const sem2End = getSem2End();
+  const pct = Math.max(0, Math.min(100, boundedPercent(now, SEM2_START, sem2End)));
+  $("#sem2Bar").style.width = pct.toFixed(2) + "%";
+  $("#sem2Percent").textContent = Math.floor(pct) + "%";
+  // Show rounded pill before start; hide once begun
+  $("#sem2Lock").style.display = (now < SEM2_START) ? "block" : "none";
+  // Subtext
+  $("#sem2Sub").textContent = `Jan 5, 2026 – ${sem2End.toLocaleDateString([], { month:"long", day:"numeric", year:"numeric"})}`;
+}
+
+/* UI */
+window.addEventListener("DOMContentLoaded",()=>{
+  const header = $("#siteHeader");
+  const moreBtn=$("#moreBtn"), moreMenu=$("#moreMenu");
+  // Position menu just under dynamic header height
+  moreBtn.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    const isOpen = (moreMenu.style.display==="block");
+    moreMenu.style.display = isOpen ? "none" : "block";
+    moreMenu.style.top = header.getBoundingClientRect().height + "px";
+  });
+  document.addEventListener("click",()=>{moreMenu.style.display="none";});
+  moreMenu.addEventListener("click",(e)=>e.stopPropagation());
+  $$("#moreMenu .item").forEach(i=>i.addEventListener("click",()=>{selectedEvent=i.dataset.key; update(); moreMenu.style.display="none";}));
 
   // Info modal
-  window.openInfo  = () => { document.getElementById("infoModal").style.display = "block"; };
-  window.closeInfo = () => { document.getElementById("infoModal").style.display = "none"; };
+  $("#moreInfoBtn").addEventListener("click", ()=>$("#infoModal").style.display="flex");
+  $("#infoClose").addEventListener("click", ()=>$("#infoModal").style.display="none");
 
-  /* More Countdowns menu */
-  const moreBtn  = document.getElementById("moreBtn");
-  const moreMenu = document.getElementById("moreMenu");
-  moreBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    moreMenu.style.display = (moreMenu.style.display === "block") ? "none" : "block";
+  // Active info (click event name)
+  $("#eventName").addEventListener("click", ()=>{
+    const ev=events[selectedEvent], d=new Date(ev.date), tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    $("#activeInfoText").textContent = `${ev.name} on ${d.toLocaleDateString([], {weekday:"long",year:"numeric",month:"long",day:"numeric"})} • ${tz}`;
+    $("#activeInfoModal").style.display="flex";
   });
-  moreMenu.addEventListener("click", (e) => e.stopPropagation());
-  document.addEventListener("click", () => { moreMenu.style.display = "none"; });
+  $("#activeInfoClose").addEventListener("click", ()=>$("#activeInfoModal").style.display="none");
 
-  moreMenu.querySelectorAll(".item").forEach(item => {
-    item.addEventListener("click", () => {
-      selectedEvent = item.getAttribute("data-key");
-      update();
-      moreMenu.style.display = "none";
-    });
-  });
+  // How to use
+  $("#howBtn").addEventListener("click", ()=>$("#howModal").style.display="flex");
+  $("#howClose").addEventListener("click", ()=>$("#howModal").style.display="none");
 
-  /* “How long until day is over” — friendly phrasing to 3:10 PM */
-  const dayOverInput  = document.getElementById("dayOverTime");
-  const dayOverBtn    = document.getElementById("dayOverGo");
-  const dayOverResult = document.getElementById("dayOverResult");
-  (function prefill() {
-    const now = new Date();
-    dayOverInput.value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  })();
-  function humanLeftLabel(minutes) {
-    if (minutes <= 0) return "School day is over";
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-    const parts = [];
-    if (h > 0) parts.push(h + " " + (h === 1 ? "hour" : "hours"));
-    if (m > 0) parts.push(m + " " + (m === 1 ? "minute" : "minutes"));
-    return parts.join(" ") + " left";
-  }
-  dayOverBtn.addEventListener("click", () => {
-    const v = dayOverInput.value;
-    if (!v) { dayOverResult.textContent = "Please enter a time."; return; }
-    const [hh, mm] = v.split(":").map(Number);
-    const today = new Date();
-    const entered = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hh, mm, 0, 0);
-    const end = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 15, 10, 0, 0); // 3:10 PM
-    const diffMin = Math.max(0, Math.round((end - entered) / 60000));
-    dayOverResult.textContent = humanLeftLabel(diffMin);
-  });
+  // Help
+  $("#helpBtn").addEventListener("click", ()=>$("#helpModal").style.display="flex");
+  $("#helpClose").addEventListener("click", ()=>$("#helpModal").style.display="none");
 
-  /* Active countdown info bubble */
-  const inlineInfoBtn = document.getElementById("inlineInfo");
-  inlineInfoBtn.addEventListener("click", () => {
-    const ev = events[selectedEvent];
-    const d = new Date(ev.date);
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    document.getElementById("activeInfoText").textContent =
-      `${ev.name} on ${d.toLocaleDateString([], { weekday:"long", year:"numeric", month:"long", day:"numeric" })} • ${tz}`;
-    document.getElementById("activeInfoModal").style.display = "block";
-  });
-  document.getElementById("activeInfoClose").addEventListener("click", () => {
-    document.getElementById("activeInfoModal").style.display = "none";
-  });
+  // Calculator (to 3:10 PM)
+  const inp=$("#dayOverTime"), go=$("#dayOverGo"), out=$("#dayOverResult");
+  (function(){const n=new Date(); inp.value=`${pad(n.getHours())}:${pad(n.getMinutes())}`;})();
+  function humanLeftLabel(min){ if(min<=0) return "School day is over"; const h=Math.floor(min/60), m=min%60; const parts=[]; if(h>0) parts.push(h+" "+(h===1?"hour":"hours")); if(m>0) parts.push(m+" "+(m===1?"minute":"minutes")); return parts.join(" ")+" left"; }
+  go.addEventListener("click",()=>{ const v=inp.value; if(!v){out.textContent="Please enter a time."; return;} const [hh,mm]=v.split(":").map(Number); const t=new Date(); const entered=new Date(t.getFullYear(),t.getMonth(),t.getDate(),hh,mm,0,0); const end=new Date(t.getFullYear(),t.getMonth(),t.getDate(),15,10,0,0); const diffMin=Math.max(0, Math.round((end-entered)/60000)); out.textContent=humanLeftLabel(diffMin); });
 
-  /* Kickoff + tick */
+  // Start
   update();
-  setInterval(update, 1000);
+  setInterval(update,1000);
 });
 </script>
 
 </body>
 </html>
-
-
