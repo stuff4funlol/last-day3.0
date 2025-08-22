@@ -233,6 +233,20 @@
   <div class="item" data-key="prom">Prom</div>
   <div class="item" data-key="seniorFinals">Senior Finals</div>
   <div class="item" data-key="underclassFinals">Underclass Finals</div>
+  <!-- School Time Remaining Calculator -->
+<div class="menu-item" style="flex-direction:column;align-items:flex-start;gap:8px">
+  <div><strong>School Time Remaining Calculator</strong></div>
+  <div style="display:flex;gap:6px;align-items:center;">
+    <input id="schoolHour" type="number" min="1" max="12" placeholder="HH" style="width:50px;padding:4px;border:1px solid var(--border);border-radius:6px;">
+    <span>:</span>
+    <input id="schoolMinute" type="number" min="0" max="59" placeholder="MM" style="width:50px;padding:4px;border:1px solid var(--border);border-radius:6px;">
+    <button id="amBtn" class="ampm-btn">AM</button>
+    <button id="pmBtn" class="ampm-btn active">PM</button>
+  </div>
+  <button id="schoolCalcBtn" class="btn btn-red" style="margin-top:6px">Confirm</button>
+  <div id="schoolCalcResult" style="margin-top:6px;font-size:0.9rem;font-weight:600;"></div>
+</div>
+
 </div>
 
 <!-- Info modal -->
@@ -253,10 +267,14 @@
 <!-- How modal -->
 <div class="modal" id="howModal"><div class="panel">
   <h2>How to use</h2>
-  <p>Click “More Countdowns” to switch events.</p>
-  <p>Use the countdown timer to track important school events.</p>
+  <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+    <li>Click “More Countdowns” to switch events.</li>
+    <li>Use the countdown timer to track important school events.</li>
+    <li>Use the calculator at the bottom of the "More Countdowns" section to track how long until school is over.</li>
+  </ul>
   <button class="btn btn-outline" id="howClose">Close</button>
 </div></div>
+
 
 <!-- Help modal -->
 <div class="modal" id="helpModal"><div class="panel">
@@ -397,6 +415,80 @@
 
   update();
   setInterval(update,1000);
+</script>
+
+<style>
+.ampm-btn {
+  padding:4px 8px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:#f8f9fa;
+  cursor:pointer;
+  font-size:0.8rem;
+}
+.ampm-btn.active {
+  background:#007bff;
+  color:white;
+  border-color:#007bff;
+}
+
+</style>
+
+<script>
+// School calculator logic
+let ampm = "PM"; // default
+
+document.getElementById("amBtn").addEventListener("click", () => {
+  ampm = "AM";
+  document.getElementById("amBtn").classList.add("active");
+  document.getElementById("pmBtn").classList.remove("active");
+});
+
+document.getElementById("pmBtn").addEventListener("click", () => {
+  ampm = "PM";
+  document.getElementById("pmBtn").classList.add("active");
+  document.getElementById("amBtn").classList.remove("active");
+});
+
+document.getElementById("schoolCalcBtn").addEventListener("click", () => {
+  const h = parseInt(document.getElementById("schoolHour").value);
+  const m = parseInt(document.getElementById("schoolMinute").value) || 0;
+  const resultEl = document.getElementById("schoolCalcResult");
+
+  if(isNaN(h) || h < 1 || h > 12){
+    resultEl.textContent = "Please enter a valid hour (1–12).";
+    return;
+  }
+  if(m < 0 || m > 59){
+    resultEl.textContent = "Please enter valid minutes (0–59).";
+    return;
+  }
+
+  let hour24 = h % 12;
+  if(ampm === "PM") hour24 += 12;
+
+  const inputDate = new Date();
+  inputDate.setHours(hour24, m, 0, 0);
+
+  const endDate = new Date();
+  endDate.setHours(15, 10, 0, 0); // 3:10 PM
+
+  if(inputDate >= endDate){
+    resultEl.textContent = "School has ended.";
+  } else {
+    let diff = (endDate - inputDate) / 60000; // minutes
+    const hrs = Math.floor(diff / 60);
+    const mins = Math.floor(diff % 60);
+
+    let result = "";
+    if(hrs > 0) result += `${hrs} hour${hrs>1?"s":""} `;
+    if(mins > 0) result += `${mins} minute${mins>1?"s":""}`;
+    if(result === "") result = "Less than a minute";
+
+    resultEl.textContent = `${result} remaining until school is over.`;
+  }
+});
+
 </script>
 </body>
 </html>
