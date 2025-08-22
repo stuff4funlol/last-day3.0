@@ -1,203 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GCHS Countdowns</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GCHS Countdowns</title>
+  <link rel="icon" href="favicon.ico?v=12" sizes="any">
+  <link rel="shortcut icon" href="favicon.ico?v=12" type="image/x-icon">
 
-<!-- Desktop browsers -->
-<link rel="icon" href="favicon.ico?v=12" sizes="any">
-<link rel="shortcut icon" href="favicon.ico?v=12" type="image/x-icon">
+  <style>
+    :root {
+      --grant-red:#C8102E;
+      --grant-red-dark:#A50E24;
+      --page:#f3f4f7;
+      --text:#1b1d21;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --shadow:0 14px 30px rgba(0,0,0,.14);
+      --border:#e6e8ef;
+      --track:#e5e7eb;
+      --track-on-red:rgba(255,255,255,.35);
+      --bar-on-red:#fff;
+    }
+    *{box-sizing:border-box}
+    body {
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--page);
+      color:var(--text);
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
 
-<style>
-  :root{
-    --grant-red:#C8102E;
-    --grant-red-dark:#A50E24;
-    --page:#f3f4f7;
-    --text:#1b1d21;
-    --muted:#6b7280;
-    --card:#ffffff;
-    --shadow:0 14px 30px rgba(0,0,0,.14);
-    --border:#e6e8ef;
-    --track:#e5e7eb;
-    --track-on-red:rgba(255,255,255,.35);
-    --bar-on-red:#fff;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  /* 3-row layout: header, content, footer */
-  body{
-    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    background:var(--page); color:var(--text);
-    display:grid; grid-template-rows:auto 1fr auto;
-    min-height:100vh;
-    overflow-x:hidden;              /* prevent sideways scroll on small screens */
-    -webkit-text-size-adjust:100%;  /* iOS Safari text scaling stabilizer */
-  }
+    /* Bounce in animation */
+    @keyframes bounceIn {
+      0%   { transform: scale(0.9); opacity: 0; }
+      60%  { transform: scale(1.05); opacity: 1; }
+      80%  { transform: scale(0.95); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    body.loaded header,
+    body.loaded main,
+    body.loaded footer,
+    body.loaded .disclaimer {
+      animation: bounceIn 0.8s ease forwards;
+    }
+    body.loaded main { animation-delay: 0.15s; }
+    body.loaded footer { animation-delay: 0.3s; }
+    body.loaded .disclaimer { animation-delay: 0.45s; }
 
-  /* Header (with Sem1 progress in red) */
-  header{
-    background:var(--grant-red); color:#fff;
-    display:flex; flex-direction:column; gap:8px;
-    padding:8px 16px 12px;
-    box-shadow:0 2px 6px rgba(0,0,0,.18);
-    position:sticky; top:0; z-index:2000;
-  }
-  .headrow{ display:flex; align-items:center; justify-content:space-between; min-height:40px; }
-  .brand{ font-weight:800; letter-spacing:.4px; white-space:nowrap; text-shadow:0 1px 0 rgba(0,0,0,.25); }
-  .actions{ display:flex; gap:10px; align-items:center; }
-  .btn{ appearance:none; border:0; border-radius:10px; cursor:pointer; padding:8px 12px; font-weight:700; white-space:nowrap; }
-  .btn-ghost{ background:transparent; color:#fff; border-radius:8px; }
-  .btn-ghost:hover{ background:rgba(255,255,255,.12); }
-  .btn-outline{ background:#fff; color:#000; }
-  .btn-outline:hover{ background:#f2f2f2; }
-  .btn-red{ background:var(--grant-red); color:#fff; border-radius:999px; }
-  .btn-red:hover{ background:var(--grant-red-dark); }
+    /* Smooth content swap (when changing countdowns) */
+    .swap-out {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .swap-in {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .24s ease, transform .24s ease;
+    }
 
-  /* Semester 1 progress (on header) */
-  .sem1{ display:flex; flex-direction:column; gap:6px; }
-  .sem1-header{ display:flex; align-items:center; justify-content:space-between; font-size:.95rem; }
-  .sem1-title{ font-weight:800; letter-spacing:.04em; }
-  .sem1-percent{ font-weight:800; }
-  .sem1-track{ position:relative; height:8px; width:100%; background:var(--track-on-red); border-radius:999px; overflow:hidden; }
-  .sem1-track .bar{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--bar-on-red); }
+    /* Header */
+    header {
+      background:var(--grant-red);
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:8px 16px 12px;
+      box-shadow:0 2px 6px rgba(0,0,0,.18);
+      position:sticky;
+      top:0;
+      z-index:2000;
+    }
+    .headrow {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .brand { font-weight:800; text-shadow:0 1px 0 rgba(0,0,0,.25); }
+    .actions { display:flex; gap:10px; align-items:center; }
+    .btn {
+      appearance:none;
+      border:0;
+      border-radius:10px;
+      cursor:pointer;
+      padding:8px 12px;
+      font-weight:700;
+    }
+    .btn-ghost{ background:transparent; color:#fff; }
+    .btn-ghost:hover{ background:rgba(255,255,255,.12); }
+    .btn-outline{ background:#fff; color:#000; }
+    .btn-outline:hover{ background:#f2f2f2; }
+    .btn-red{ background:var(--grant-red); color:#fff; border-radius:999px; }
+    .btn-red:hover{ background:var(--grant-red-dark); }
 
-  /* Main card */
-  .wrap{ display:flex; align-items:center; justify-content:center; padding:36px 16px 24px; }
-  .card{
-    width:min(900px, 92vw);
-    background:var(--card); color:var(--text);
-    border-radius:14px; box-shadow:var(--shadow);
-    border:1px solid var(--border);
-    text-align:center; padding:24px 28px 24px;
-  }
-  .section-title{
-    color:var(--grant-red); text-transform:uppercase;
-    letter-spacing:.14em; font-weight:800; margin:6px 0 6px;
-  }
-  .welcome{ margin:0 0 10px; color:var(--muted); font-weight:600; }
-  #eventName{ font-size:1.4rem; font-weight:800; margin:0 0 10px; }
-  #daysRow{ display:flex; align-items:baseline; justify-content:center; gap:12px; }
-  #daysRemaining{ color:var(--grant-red); font-size:clamp(72px, 10vw, 160px); font-weight:900; line-height:1; }
-  #daysUnit{ font-size:clamp(22px, 3.2vw, 36px); color:#374151; font-weight:700; }
-  #countdown{
-    margin-top:10px; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    font-size:clamp(16px, 2.2vw, 18px); color:#1f2937; letter-spacing:.06em;
-  }
+    /* Sem 1 Progress */
+    .sem1{ display:flex; flex-direction:column; gap:6px; }
+    .sem1-header{ display:flex; justify-content:space-between; font-size:.95rem; }
+    .sem1-title{ font-weight:800; }
+    .sem1-percent{ font-weight:800; }
+    .sem1-track{ height:8px; background:var(--track-on-red); border-radius:999px; }
+    .sem1-track .bar{ height:100%; width:0%; background:var(--bar-on-red); }
 
-  /* Footer: Semester 2 progress ALL the way at the bottom */
-  footer.sem2-footer{
-    display:flex; align-items:flex-end; justify-content:center;
-    padding:0 16px 16px;
-  }
-  .sem2-container{
-    width:min(900px, 92vw);
-    position:relative;
-    color:var(--text);
-  }
-  .sem2-block{
-    text-align:left; position:relative; padding-top:28px;  /* space for the pill */
-  }
-  .sem-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
-  .sem-title{ font-weight:800; letter-spacing:.06em; color:#374151; }
-  .sem-percent{ font-weight:800; color:var(--grant-red); }
+    /* Main */
+    .wrap{ display:flex; justify-content:center; padding:36px 16px; }
+    .card{
+      width:min(900px, 92vw);
+      background:var(--card);
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      text-align:center;
+      padding:24px 28px;
+    }
+    .section-title{ color:var(--grant-red); font-weight:800; }
+    #daysRow{ display:flex; justify-content:center; gap:12px; }
+    #daysRemaining{ color:var(--grant-red); font-size:clamp(72px, 10vw, 160px); font-weight:900; }
+    #daysUnit{ font-size:clamp(22px, 3vw, 36px); font-weight:700; }
 
-  .progress{ position:relative; height:10px; width:100%; background:var(--track); border-radius:999px; overflow:hidden; }
-  .progress .bar{ position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--grant-red); transition:width .4s ease; }
+    /* Footer */
+    footer.sem2-footer{ display:flex; justify-content:center; padding:0 16px 16px; }
+    .sem2-container{ width:min(900px,92vw); }
+    .progress{ height:10px; background:var(--track); border-radius:999px; overflow:hidden; }
+    .progress .bar{ height:100%; width:0%; background:var(--grant-red); transition:width .4s ease; }
+    .lock-pill{ position:absolute; left:50%; transform:translateX(-50%); top:-18px;
+      background:rgba(107,114,128,.92); color:#fff; padding:4px 10px; border-radius:999px; font-size:.8rem; }
 
-  /* Rounded "LOCKED" pill above the bar (not overlapping it) */
-  .lock-pill{
-    position:absolute; left:50%; top:0; transform:translate(-50%,-40%);
-    background:rgba(107,114,128,.92); color:#fff;
-    padding:6px 12px; border-radius:999px; font-weight:800; font-size:.8rem; letter-spacing:.03em;
-    white-space:nowrap; pointer-events:none;
-  }
-  .sem-sub{ margin-top:6px; font-size:.9rem; color:#6b7280; }
+    /* Dropdown (smooth animation) */
+    .more-menu {
+      position:fixed; right:12px; top:60px;
+      background:#fff; border:1px solid var(--border);
+      border-radius:12px; box-shadow:0 16px 36px rgba(0,0,0,.18);
+      min-width:320px; z-index:2500;
 
-  /* Dropdown */
-  .more-menu{
-    position:fixed; right:12px;
-    background:#fff; color:var(--text);
-    border-radius:12px; box-shadow:0 16px 36px rgba(0,0,0,.18);
-    display:none; min-width:320px; z-index:2500; overflow:hidden;
-    border:1px solid var(--border);
-  }
-  .more-menu .item{ padding:12px 14px; cursor:pointer; border-bottom:1px solid var(--border); }
-  .more-menu .item:hover{ background:#f7f7fb }
-  .more-menu .section{ padding:12px 14px; }
-  .more-menu .section h4{ margin:0 0 8px 0; font-size:.95rem; color:#374151; }
-  .more-menu .section input{
-    width:100%; padding:10px; border-radius:10px; border:1px solid #d4d7e2; background:#fff; color:#111;
-  }
+      /* hidden state */
+      max-height:0;
+      opacity:0;
+      transform: translateY(-8px);
+      overflow:hidden;
+      pointer-events:none;
 
-  /* Modals */
-  .modal{ display:none; position:fixed; inset:0; z-index:3000; align-items:center; justify-content:center; background:rgba(0,0,0,.35); padding:16px; }
-  .panel{
-    background:#fff; color:var(--text); border-radius:12px; box-shadow:0 24px 48px rgba(0,0,0,.2);
-    padding:20px; width:min(92vw, 560px); border:1px solid var(--border);
-  }
-  .panel h2{ margin:0 0 10px 0; }
-  .panel section{ margin:10px 0 2px; }
-  .panel h3{ margin:.4rem 0; font-size:1rem; color:#374151; }
-  .panel p{ margin:.25rem 0 .75rem; color:#1f2937; }
+      transition: max-height .32s ease, opacity .24s ease, transform .24s ease;
+    }
+    .more-menu.open{
+      max-height:520px;           /* large enough for all items */
+      opacity:1;
+      transform: translateY(0);
+      pointer-events:auto;
+    }
+    .more-menu .item{ padding:12px 14px; cursor:pointer; border-bottom:1px solid var(--border); }
+    .more-menu .item:hover{ background:#f7f7fb; }
 
-  /* Help & Disclaimer (fixed) */
-  .help-btn{ position:fixed; left:10px; bottom:10px; z-index:2600; }
-  .disclaimer{
-    position:fixed; left:10px; bottom:54px; z-index:2550;
-    color:#4b5563; font-size:.78rem; max-width:460px; text-transform:uppercase; letter-spacing:.03em;
-  }
+    /* Modals */
+    .modal{ display:none; position:fixed; inset:0; z-index:3000;
+      align-items:center; justify-content:center; background:rgba(0,0,0,.35); }
+    .modal.open{ display:flex; }
+    .panel{ background:#fff; border-radius:12px; box-shadow:0 24px 48px rgba(0,0,0,.2); padding:20px; width:min(92vw,560px); }
 
-  /* --------- MOBILE TWEAKS (added) --------- */
-  @media (max-width: 768px){
-    header{ padding:8px 12px 10px; }
-    .headrow{ gap:10px; flex-wrap:wrap; }
-    .brand{ font-size:clamp(14px, 3.6vw, 18px); }
-    .actions .btn{ padding:6px 10px; font-size:13px; }
-
-    .wrap{ padding:22px 12px; }
-    .card{ padding:18px 16px; }
-    #eventName{ font-size:1.2rem; }
-    #daysRemaining{ font-size:clamp(64px, 18vw, 130px); }
-    #daysUnit{ font-size:clamp(18px, 4.2vw, 24px); }
-    #countdown{ font-size:clamp(14px, 3.8vw, 16px); }
-
-    .more-menu{ min-width:92vw; right:8px; }
-    .panel{ width:min(94vw, 520px); }
-    .disclaimer{ max-width:90vw; font-size:.72rem; }
-  }
-
-  @media (max-width: 420px){
-    header{ padding:6px 10px 10px; }
-    .brand{ font-size:14px; }
-    .actions{ gap:8px; }
-    .actions .btn{ padding:6px 8px; font-size:12px; }
-
-    .wrap{ padding:16px 10px; }
-    .card{ padding:16px 14px; }
-    #eventName{ font-size:1.1rem; }
-    #daysRemaining{ font-size:clamp(56px, 22vw, 120px); }
-    #daysUnit{ font-size:clamp(16px, 5vw, 20px); }
-    #countdown{ font-size:clamp(13px, 4.2vw, 15px); letter-spacing:.04em; }
-
-    .panel{ width:min(96vw, 500px); }
-    .disclaimer{ max-width:86vw; font-size:.7rem; }
-  }
-
-  /* Respect users who prefer less motion */
-  @media (prefers-reduced-motion: reduce){
-    .progress .bar{ transition:none; }
-  }
-
-  /* Safe-area padding for iPhone bottom inset (Home indicator) */
-  @supports (padding: max(0px)){
-    .help-btn{ padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
-    .disclaimer{ bottom: calc(54px + env(safe-area-inset-bottom)); }
-  }
-</style>
+    /* Disclaimer (bottom right, a bit smaller & tighter) */
+    .disclaimer {
+      position:fixed;
+      right:10px;
+      bottom:6px;
+      z-index:2550;
+      color:#4b5563;
+      font-size:.7rem;
+      max-width:440px;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      text-align:right;
+      line-height:1.3;
+    }
+  </style>
 </head>
 <body>
-
 <header id="siteHeader">
   <div class="headrow">
     <div class="brand">Grant Community High School</div>
@@ -206,56 +185,45 @@
       <button id="moreBtn" class="btn btn-ghost">More Countdowns ▾</button>
     </div>
   </div>
-
-  <!-- Semester 1 progress on the red header -->
-  <div class="sem1" aria-label="Semester 1 progress">
+  <div class="sem1">
     <div class="sem1-header">
       <span class="sem1-title">Semester 1 Progress</span>
       <span id="sem1Percent" class="sem1-percent">0%</span>
     </div>
-    <div class="sem1-track" aria-hidden="true"><div id="sem1Bar" class="bar"></div></div>
+    <div class="sem1-track"><div id="sem1Bar" class="bar"></div></div>
   </div>
 </header>
 
 <main class="wrap">
-  <section class="card" aria-label="Countdown">
+  <section class="card">
     <div class="section-title">GCHS COUNTDOWN</div>
-    <div class="welcome">Welcome Bulldogs!</div>
-
+    <div>Welcome Bulldogs!</div>
     <div id="eventName">Last Day of School</div>
-
     <div id="daysRow">
       <span id="daysRemaining">Loading...</span>
       <span id="daysUnit">days</span>
     </div>
-
     <div id="countdown">-- hours -- minutes -- seconds</div>
-
     <div style="margin-top:14px">
       <button id="moreInfoBtn" class="btn btn-red">More Info</button>
     </div>
   </section>
 </main>
 
-<!-- Footer: Semester 2 progress ALL the way at the bottom -->
-<footer class="sem2-footer" aria-label="Semester 2 section">
+<footer class="sem2-footer">
   <div class="sem2-container">
-    <div class="sem2-block">
-      <div class="sem-header">
-        <span class="sem-title">Semester 2 Progress</span>
-        <span id="sem2Percent" class="sem-percent">0%</span>
-      </div>
-        <div class="progress" id="sem2Track">
-          <div id="sem2Bar" class="bar"></div>
-        </div>
-        <div id="sem2Lock" class="lock-pill">LOCKED: Semester 2 has not begun yet.</div>
-        <div id="sem2Sub" class="sem-sub">Jan 5, 2026 – May 22, 2026</div>
+    <div class="sem-header">
+      <span class="sem-title">Semester 2 Progress</span>
+      <span id="sem2Percent" class="sem-percent">0%</span>
     </div>
+    <div class="progress"><div id="sem2Bar" class="bar"></div></div>
+    <div id="sem2Lock" class="lock-pill">LOCKED: Semester 2 has not begun yet.</div>
+    <div id="sem2Sub" class="sem-sub">Jan 5, 2026 – May 22, 2026</div>
   </div>
 </footer>
 
 <!-- Dropdown -->
-<div class="more-menu" id="moreMenu" role="menu" aria-label="More countdowns">
+<div class="more-menu" id="moreMenu">
   <div class="item" data-key="lastDay">Last Day of School</div>
   <div class="item" data-key="winterBreak">Winter Break</div>
   <div class="item" data-key="springBreak">Spring Break</div>
@@ -265,216 +233,170 @@
   <div class="item" data-key="prom">Prom</div>
   <div class="item" data-key="seniorFinals">Senior Finals</div>
   <div class="item" data-key="underclassFinals">Underclass Finals</div>
-  <div class="section">
-    <h4>How long until day is over</h4>
-    <input id="dayOverTime" type="time" />
-    <button id="dayOverGo" class="btn btn-outline">Confirm</button>
-    <div id="dayOverResult" style="margin-top:6px;"></div>
-  </div>
 </div>
 
 <!-- Info modal -->
-<div class="modal" id="infoModal" role="dialog" aria-hidden="true">
-  <div class="panel">
-    <h2>Countdown Info</h2>
-    <p><b>Last Day of School:</b> Countdown until the final school day.</p>
-    <p><b>Winter Break:</b> Countdown until the first day of winter break.</p>
-    <p><b>Spring Break:</b> Countdown until the first day of spring break.</p>
-    <p><b>Thanksgiving Break:</b> Countdown until the first day of Thanksgiving break.</p>
-    <p><b>Graduation:</b> Countdown until graduation day.</p>
-    <p><b>Homecoming:</b> Countdown until Homecoming day.</p>
-    <p><b>Prom:</b> Countdown until Prom.</p>
-    <p><b>Senior Finals:</b> Countdown to the first day of senior final exams.</p>
-    <p><b>Underclass Finals:</b> Countdown to the first day of freshmen sophomore junior final exams.</p>
-    <button class="btn btn-outline" id="infoClose">Close</button>
-  </div>
-</div>
+<div class="modal" id="infoModal"><div class="panel">
+  <h2>Countdown Info</h2>
+  <p><b>Last Day of School:</b> Final day of school.</p>
+  <p><b>Winter Break:</b> First day of winter break.</p>
+  <p><b>Spring Break:</b> First day of spring break.</p>
+  <p><b>Thanksgiving Break:</b> First day of Thanksgiving break.</p>
+  <p><b>Graduation:</b> Graduation day.</p>
+  <p><b>Homecoming:</b> Homecoming day.</p>
+  <p><b>Prom:</b> Prom.</p>
+  <p><b>Senior Finals:</b> First day of senior exams.</p>
+  <p><b>Underclass Finals:</b> First day of underclass exams.</p>
+  <button class="btn btn-outline" id="infoClose">Close</button>
+</div></div>
 
-<!-- Active countdown info modal -->
-<div class="modal" id="activeInfoModal" role="dialog" aria-hidden="true">
-  <div class="panel">
-    <h2>Active Countdown</h2>
-    <p id="activeInfoText"></p>
-    <button class="btn btn-outline" id="activeInfoClose">Close</button>
-  </div>
-</div>
+<!-- How modal -->
+<div class="modal" id="howModal"><div class="panel">
+  <h2>How to use</h2>
+  <p>Click “More Countdowns” to switch events.</p>
+  <p>Use the countdown timer to track important school events.</p>
+  <button class="btn btn-outline" id="howClose">Close</button>
+</div></div>
 
-<!-- How to use modal -->
-<div class="modal" id="howModal" role="dialog" aria-hidden="true">
-  <div class="panel">
-    <h2>How to use</h2>
+<!-- Help modal -->
+<div class="modal" id="helpModal"><div class="panel">
+  <h2>Help</h2>
+  <p>If there is any issues please be patient and i will get to them. </p>
+   <p>This site was made with the help from ChatGPT but the idea was entirely human.</p>
+    <p>I am 1 person, not multiple. Thank you! -MVM</p>
+  <button class="btn btn-outline" id="helpClose">Close</button>
+</div></div>
 
-    <section>
-      <h3>Welcome</h3>
-      <p>Hello GCHS bulldog! This is an unofficial Grant Community High School website.</p>
-    </section>
+<button class="btn btn-outline" id="helpBtn" style="position:fixed;left:10px;bottom:10px;z-index:2600">Help</button>
 
-    <section>
-      <h3>Viewing other countdowns</h3>
-      <p>Click the <b>“More Countdowns”</b> button on the top right and choose an event from the list.</p>
-    </section>
-
-    <section>
-      <h3>School-day calculator</h3>
-      <p>In the same menu, enter the <b>current time</b> and click <b>Confirm</b>. The result will appear right below it.</p>
-    </section>
-
-    <section>
-      <h3>Thanks!</h3>
-      <p>Thank you for using my custom made website!</p>
-    </section>
-
-    <button class="btn btn-outline" id="howClose">Close</button>
-  </div>
-</div>
-
-<!-- Help -->
-<button class="btn btn-outline help-btn" id="helpBtn">Help</button>
-<div class="modal" id="helpModal" role="dialog" aria-hidden="true">
-  <div class="panel">
-    <h2>Help</h2>
-    <p style="white-space:pre-wrap">
-If there is an issue please just be patient. I'll probably find it soon and get it fixed I apologize in advance.
-But if something isn't accurate please tell the person you got the website from and eventually it'll get back to me to fix.
-I'm 1 person not multiple. This website was built with the help from ChatGPT but the idea was entirely human. Thank you-MVM (a freshman)
-    </p>
-    <button class="btn btn-outline" id="helpClose">Close</button>
-  </div>
-</div>
-
-<!-- Disclaimer -->
 <div class="disclaimer">
-  THIS IS NOT AN OFFICIAL GRANT COMMUNITY HIGH SCHOOL WEBSITE. TO FIND THE OFFICIAL SCHOOL AFFILIATED WEBSITE GO TO GRANTBULLDOGS.ORG
+  THIS IS NOT AN OFFICIAL GRANT COMMUNITY HIGH SCHOOL WEBSITE.<br>
+  FOR THE OFFICIAL SITE VISIT GRANTBULLDOGS.ORG
 </div>
 
 <script>
-/* Utilities */
-const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const pad=(n)=>String(n).padStart(2,'0');
-const unit=(n,one,many)=>n===1?one:many;
-const atMidnight=(d)=>{const x=new Date(d); x.setHours(0,0,0,0); return x;};
+  const $ = (s,r=document)=>r.querySelector(s);
+  const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
-/* Dates (GCHS set) */
-const events={
-  lastDay:{name:"Last Day of School",date:"2026-05-22T00:00:00"},
-  winterBreak:{name:"Winter Break",date:"2025-12-22T00:00:00"},
-  springBreak:{name:"Spring Break",date:"2026-03-23T00:00:00"},
-  thanksgivingBreak:{name:"Thanksgiving Break",date:"2025-11-26T00:00:00"},
-  graduation:{name:"Graduation",date:"2026-05-17T00:00:00"},
-  homecoming:{name:"Homecoming",date:"2025-09-19T00:00:00"},
-  prom:{name:"Prom",date:"2026-05-01T00:00:00"},
-  seniorFinals:{name:"Senior Finals",date:"2026-05-12T00:00:00"},
-  underclassFinals:{name:"Underclass Finals",date:"2026-05-20T00:00:00"}
-};
-let selectedEvent="lastDay";
+  const events = {
+    lastDay:{name:"Last Day of School",date:"2026-05-22T00:00:00"},
+    winterBreak:{name:"Winter Break",date:"2025-12-22T00:00:00"},
+    springBreak:{name:"Spring Break",date:"2026-03-23T00:00:00"},
+    thanksgivingBreak:{name:"Thanksgiving Break",date:"2025-11-26T00:00:00"},
+    graduation:{name:"Graduation",date:"2026-05-17T00:00:00"},
+    homecoming:{name:"Homecoming",date:"2025-09-19T00:00:00"},
+    prom:{name:"Prom",date:"2026-05-01T00:00:00"},
+    seniorFinals:{name:"Senior Finals",date:"2026-05-12T00:00:00"},
+    underclassFinals:{name:"Underclass Finals",date:"2026-05-20T00:00:00"}
+  };
+  let selectedEvent="lastDay";
 
-/* Semesters */
-const SEM1_START = new Date("2025-08-13T00:00:00");
-const SEM1_END   = new Date("2025-12-19T23:59:59.999");
-const SEM2_START = new Date("2026-01-05T00:00:00");
-function getSem2End(){
-  const d = new Date(events.lastDay.date);
-  d.setHours(23,59,59,999); // through the last day
-  return d;
-}
+  const SEM1_START=new Date("2025-08-13T00:00:00");
+  const SEM1_END=new Date("2025-12-19T23:59:59");
+  const SEM2_START=new Date("2026-01-05T00:00:00");
+  const SEM2_END=new Date("2026-05-22T23:59:59");
 
-/* Countdown logic */
-function daysUntilExclusive(today, finalDay){
-  const start=atMidnight(today), end=atMidnight(finalDay);
-  const diff=Math.floor((end-start)/(24*60*60*1000));
-  return Math.max(0,diff);
-}
-function formatLabeledTime(seconds){
-  const h=Math.floor(seconds/3600), m=Math.floor((seconds%3600)/60), s=seconds%60;
-  return `${pad(h)} ${unit(h,"hour","hours")} ${pad(m)} ${unit(m,"minute","minutes")} ${pad(s)} ${unit(s,"second","seconds")}`;
-}
-function update(){
-  const now=new Date();
-  const todayMidnight=atMidnight(now);
-  const finalDay=new Date(events[selectedEvent].date);
+  function daysUntilExclusive(today, finalDay){
+    const start=new Date(today); start.setHours(0,0,0,0);
+    const end=new Date(finalDay); end.setHours(0,0,0,0);
+    return Math.max(0,Math.floor((end-start)/86400000));
+  }
+  function formatTime(sec){
+    const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+    return `${h} hour${h!==1?"s":""} ${m} minute${m!==1?"s":""} ${s} second${s!==1?"s":""}`;
+  }
+  function boundedPercent(now,start,end){
+    if(now<=start)return 0;
+    if(now>=end)return 100;
+    return ((now-start)/(end-start))*100;
+  }
 
-  const remainingDays=daysUntilExclusive(todayMidnight, finalDay);
+  function update(){
+    const now=new Date();
+    const ev=events[selectedEvent];
+    const finalDay=new Date(ev.date);
+    const days=daysUntilExclusive(now,finalDay);
+    const nextMidnight=new Date(now); nextMidnight.setHours(24,0,0,0);
+    let secLeft=Math.floor((nextMidnight-now)/1000);
+    if(secLeft<=0)secLeft=86400;
 
-  const nextMidnight=new Date(todayMidnight); nextMidnight.setDate(nextMidnight.getDate()+1);
-  let secondsLeft=Math.floor((nextMidnight-now)/1000); if(secondsLeft<=0) secondsLeft=24*3600;
+    $("#eventName").textContent=ev.name;
+    $("#daysRemaining").textContent=days;
+    $("#daysUnit").textContent=days===1?"day":"days";
+    $("#countdown").textContent=formatTime(secLeft);
 
-  $("#eventName").textContent=events[selectedEvent].name;
-  $("#daysRemaining").textContent=remainingDays;
-  $("#daysUnit").textContent=unit(remainingDays,"day","days");
-  $("#countdown").textContent=formatLabeledTime(secondsLeft);
+    const sem1Pct=boundedPercent(now,SEM1_START,SEM1_END);
+    $("#sem1Bar").style.width=sem1Pct.toFixed(2)+"%";
+    $("#sem1Percent").textContent=Math.floor(sem1Pct)+"%";
 
-  updateSemester1Progress(now);
-  updateSemester2Progress(now);
-}
+    const sem2Pct=boundedPercent(now,SEM2_START,SEM2_END);
+    $("#sem2Bar").style.width=sem2Pct.toFixed(2)+"%";
+    $("#sem2Percent").textContent=Math.floor(sem2Pct)+"%";
+    $("#sem2Lock").style.display=(now<SEM2_START)?"block":"none";
+  }
 
-/* Semester progress helpers */
-function boundedPercent(now, start, end){
-  if (now <= start) return 0;
-  if (now >= end) return 100;
-  return ((now - start) / (end - start)) * 100;
-}
-function updateSemester1Progress(now=new Date()){
-  const pct = Math.max(0, Math.min(100, boundedPercent(now, SEM1_START, SEM1_END)));
-  $("#sem1Bar").style.width = pct.toFixed(2) + "%";
-  $("#sem1Percent").textContent = Math.floor(pct) + "%";
-}
-function updateSemester2Progress(now=new Date()){
-  const sem2End = getSem2End();
-  const pct = Math.max(0, Math.min(100, boundedPercent(now, SEM2_START, sem2End)));
-  $("#sem2Bar").style.width = pct.toFixed(2) + "%";
-  $("#sem2Percent").textContent = Math.floor(pct) + "%";
-  // Show rounded pill before start; hide once begun
-  $("#sem2Lock").style.display = (now < SEM2_START) ? "block" : "none";
-  // Subtext
-  $("#sem2Sub").textContent = `Jan 5, 2026 – ${sem2End.toLocaleDateString([], { month:"long", day:"numeric", year:"numeric"})}`;
-}
+  // Smoothly switch events (fade/slide old out, then new in)
+  function animateEventChange(nextKey){
+    const els = [$("#eventName"), $("#daysRow"), $("#countdown")];
 
-/* UI */
-window.addEventListener("DOMContentLoaded",()=>{
-  const header = $("#siteHeader");
-  const moreBtn=$("#moreBtn"), moreMenu=$("#moreMenu");
-  // Position menu just under dynamic header height
-  moreBtn.addEventListener("click",(e)=>{
+    // Start fade out
+    els.forEach(el => {
+      el.classList.remove('swap-in');
+      void el.offsetWidth; // reflow to ensure transition
+      el.classList.add('swap-out');
+    });
+
+    const doSwap = () => {
+      selectedEvent = nextKey;
+      update();
+
+      // Fade back in
+      requestAnimationFrame(()=>{
+        els.forEach(el => {
+          el.classList.remove('swap-out');
+          void el.offsetWidth;
+          el.classList.add('swap-in');
+          // optional cleanup after animation
+          setTimeout(()=>el.classList.remove('swap-in'), 260);
+        });
+      });
+    };
+
+    // Once the first element finishes its fade out, swap content
+    els[0].addEventListener('transitionend', doSwap, { once:true });
+
+    // Fallback in case transitionend doesn't fire
+    setTimeout(doSwap, 220);
+  }
+
+  // UI Logic
+  $("#moreBtn").addEventListener("click",(e)=>{
     e.stopPropagation();
-    const isOpen = (moreMenu.style.display==="block");
-    moreMenu.style.display = isOpen ? "none" : "block";
-    moreMenu.style.top = header.getBoundingClientRect().height + "px";
+    $("#moreMenu").classList.toggle("open");
   });
-  document.addEventListener("click",()=>{moreMenu.style.display="none";});
-  moreMenu.addEventListener("click",(e)=>e.stopPropagation());
-  $$("#moreMenu .item").forEach(i=>i.addEventListener("click",()=>{selectedEvent=i.dataset.key; update(); moreMenu.style.display="none";}));
-
-  // Info modal
-  $("#moreInfoBtn").addEventListener("click", ()=>$("#infoModal").style.display="flex");
-  $("#infoClose").addEventListener("click", ()=>$("#infoModal").style.display="none");
-
-  // Active info (click event name)
-  $("#eventName").addEventListener("click", ()=>{
-    const ev=events[selectedEvent], d=new Date(ev.date), tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
-    $("#activeInfoText").textContent = `${ev.name} on ${d.toLocaleDateString([], {weekday:"long",year:"numeric",month:"long",day:"numeric"})} • ${tz}`;
-    $("#activeInfoModal").style.display="flex";
+  document.addEventListener("click",e=>{
+    if(!$("#moreMenu").contains(e.target) && !$("#moreBtn").contains(e.target)){
+      $("#moreMenu").classList.remove("open");
+    }
   });
-  $("#activeInfoClose").addEventListener("click", ()=>$("#activeInfoModal").style.display="none");
+  $$("#moreMenu .item").forEach(i=>i.addEventListener("click",()=>{
+    animateEventChange(i.dataset.key);
+    $("#moreMenu").classList.remove("open");
+  }));
 
-  // How to use
-  $("#howBtn").addEventListener("click", ()=>$("#howModal").style.display="flex");
-  $("#howClose").addEventListener("click", ()=>$("#howModal").style.display="none");
+  function bindModal(openBtn,modal,closeBtn){
+    $(openBtn).addEventListener("click",()=>$(modal).classList.add("open"));
+    $(closeBtn).addEventListener("click",()=>$(modal).classList.remove("open"));
+  }
+  bindModal("#moreInfoBtn","#infoModal","#infoClose");
+  bindModal("#howBtn","#howModal","#howClose");
+  bindModal("#helpBtn","#helpModal","#helpClose");
 
-  // Help
-  $("#helpBtn").addEventListener("click", ()=>$("#helpModal").style.display="flex");
-  $("#helpClose").addEventListener("click", ()=>$("#helpModal").style.display="none");
+  // trigger bounce-in animations once page loads
+  window.addEventListener("load",()=>document.body.classList.add("loaded"));
 
-  // Calculator (to 3:10 PM)
-  const inp=$("#dayOverTime"), go=$("#dayOverGo"), out=$("#dayOverResult");
-  (function(){const n=new Date(); inp.value=`${pad(n.getHours())}:${pad(n.getMinutes())}`;})();
-  function humanLeftLabel(min){ if(min<=0) return "School day is over"; const h=Math.floor(min/60), m=min%60; const parts=[]; if(h>0) parts.push(h+" "+(h===1?"hour":"hours")); if(m>0) parts.push(m+" "+(m===1?"minute":"minutes")); return parts.join(" ")+" left"; }
-  go.addEventListener("click",()=>{ const v=inp.value; if(!v){out.textContent="Please enter a time."; return;} const [hh,mm]=v.split(":").map(Number); const t=new Date(); const entered=new Date(t.getFullYear(),t.getMonth(),t.getDate(),hh,mm,0,0); const end=new Date(t.getFullYear(),t.getMonth(),t.getDate(),15,10,0,0); const diffMin=Math.max(0, Math.round((end-entered)/60000)); out.textContent=humanLeftLabel(diffMin); });
-
-  // Start
   update();
   setInterval(update,1000);
-});
 </script>
-
 </body>
 </html>
