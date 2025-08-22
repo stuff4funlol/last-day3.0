@@ -5,11 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GCHS Countdowns</title>
 
-<link rel="icon" href="favicon.ico?v=9" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=9">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=9">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=9">
-  
+<!-- Desktop browsers -->
+<link rel="icon" href="favicon.ico?v=12" sizes="any">
+<link rel="shortcut icon" href="favicon.ico?v=12" type="image/x-icon">
+
 <style>
   :root{
     --grant-red:#C8102E;
@@ -32,6 +31,8 @@
     background:var(--page); color:var(--text);
     display:grid; grid-template-rows:auto 1fr auto;
     min-height:100vh;
+    overflow-x:hidden;              /* prevent sideways scroll on small screens */
+    -webkit-text-size-adjust:100%;  /* iOS Safari text scaling stabilizer */
   }
 
   /* Header (with Sem1 progress in red) */
@@ -45,7 +46,7 @@
   .headrow{ display:flex; align-items:center; justify-content:space-between; min-height:40px; }
   .brand{ font-weight:800; letter-spacing:.4px; white-space:nowrap; text-shadow:0 1px 0 rgba(0,0,0,.25); }
   .actions{ display:flex; gap:10px; align-items:center; }
-  .btn{ appearance:none; border:0; border-radius:10px; cursor:pointer; padding:8px 12px; font-weight:700; }
+  .btn{ appearance:none; border:0; border-radius:10px; cursor:pointer; padding:8px 12px; font-weight:700; white-space:nowrap; }
   .btn-ghost{ background:transparent; color:#fff; border-radius:8px; }
   .btn-ghost:hover{ background:rgba(255,255,255,.12); }
   .btn-outline{ background:#fff; color:#000; }
@@ -146,6 +147,53 @@
     position:fixed; left:10px; bottom:54px; z-index:2550;
     color:#4b5563; font-size:.78rem; max-width:460px; text-transform:uppercase; letter-spacing:.03em;
   }
+
+  /* --------- MOBILE TWEAKS (added) --------- */
+  @media (max-width: 768px){
+    header{ padding:8px 12px 10px; }
+    .headrow{ gap:10px; flex-wrap:wrap; }
+    .brand{ font-size:clamp(14px, 3.6vw, 18px); }
+    .actions .btn{ padding:6px 10px; font-size:13px; }
+
+    .wrap{ padding:22px 12px; }
+    .card{ padding:18px 16px; }
+    #eventName{ font-size:1.2rem; }
+    #daysRemaining{ font-size:clamp(64px, 18vw, 130px); }
+    #daysUnit{ font-size:clamp(18px, 4.2vw, 24px); }
+    #countdown{ font-size:clamp(14px, 3.8vw, 16px); }
+
+    .more-menu{ min-width:92vw; right:8px; }
+    .panel{ width:min(94vw, 520px); }
+    .disclaimer{ max-width:90vw; font-size:.72rem; }
+  }
+
+  @media (max-width: 420px){
+    header{ padding:6px 10px 10px; }
+    .brand{ font-size:14px; }
+    .actions{ gap:8px; }
+    .actions .btn{ padding:6px 8px; font-size:12px; }
+
+    .wrap{ padding:16px 10px; }
+    .card{ padding:16px 14px; }
+    #eventName{ font-size:1.1rem; }
+    #daysRemaining{ font-size:clamp(56px, 22vw, 120px); }
+    #daysUnit{ font-size:clamp(16px, 5vw, 20px); }
+    #countdown{ font-size:clamp(13px, 4.2vw, 15px); letter-spacing:.04em; }
+
+    .panel{ width:min(96vw, 500px); }
+    .disclaimer{ max-width:86vw; font-size:.7rem; }
+  }
+
+  /* Respect users who prefer less motion */
+  @media (prefers-reduced-motion: reduce){
+    .progress .bar{ transition:none; }
+  }
+
+  /* Safe-area padding for iPhone bottom inset (Home indicator) */
+  @supports (padding: max(0px)){
+    .help-btn{ padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+    .disclaimer{ bottom: calc(54px + env(safe-area-inset-bottom)); }
+  }
 </style>
 </head>
 <body>
@@ -197,11 +245,11 @@
         <span class="sem-title">Semester 2 Progress</span>
         <span id="sem2Percent" class="sem-percent">0%</span>
       </div>
-      <div class="progress" id="sem2Track">
-        <div id="sem2Bar" class="bar"></div>
-      </div>
-      <div id="sem2Lock" class="lock-pill">LOCKED: Semester 2 has not begun yet.</div>
-      <div id="sem2Sub" class="sem-sub">Jan 5, 2026 – May 22, 2026</div>
+        <div class="progress" id="sem2Track">
+          <div id="sem2Bar" class="bar"></div>
+        </div>
+        <div id="sem2Lock" class="lock-pill">LOCKED: Semester 2 has not begun yet.</div>
+        <div id="sem2Sub" class="sem-sub">Jan 5, 2026 – May 22, 2026</div>
     </div>
   </div>
 </footer>
@@ -430,7 +478,3 @@ window.addEventListener("DOMContentLoaded",()=>{
 
 </body>
 </html>
-
-
-
-
